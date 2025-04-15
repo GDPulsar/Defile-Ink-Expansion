@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "inkexpansion",
+  "version": "${version}",
+  "name": "Defile: Ink Expansion",
+  "description": "Implementing a progression system to the funny ink mod",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/inkexpansion/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.pulsar.inkexpansion.client.InkExpansionClient"
+    ],
+    "main": [
+      "com.pulsar.inkexpansion.InkExpansion"
+    ]
+  },
+  "mixins": [
+    "inkexpansion.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
