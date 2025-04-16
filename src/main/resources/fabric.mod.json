@@ -8,6 +8,7 @@
   "contact": {},
   "license": "All-Rights-Reserved",
   "icon": "assets/inkexpansion/icon.png",
+  "accessWidener": "inkexpansion.accesswidener",
   "environment": "*",
   "entrypoints": {
     "client": [
@@ -15,6 +16,15 @@
     ],
     "main": [
       "com.pulsar.inkexpansion.InkExpansion"
+    ],
+    "cardinal-components": [
+      "com.pulsar.inkexpansion.component.InkExpansionComponents"
+    ]
+  },
+  "custom": {
+    "cardinal-components": [
+      "inkexpansion:inkling_upgrades",
+      "inkexpansion:extended_black_rain"
     ]
   },
   "mixins": [

@@ -1,0 +1,14 @@
+{
+  "itemGroup.inkexpansion.inkexpansion": "Ink Expansion",
+  "item.inkexpansion.ink_effigy": "Ink Effigy",
+  "item.inkexpansion.ink_effigy.dangerZone": "Danger Zone",
+  "item.inkexpansion.ink_effigy.stormy": "Stormy",
+  "item.inkexpansion.ink_effigy.coverage": "Coverage",
+  "item.inkexpansion.ink_effigy.heavy": "Heavy",
+  "item.inkexpansion.ink_effigy.duration": "%s:00",
+  "item.inkexpansion.ink_bucket": "Ink Bucket",
+  "item.inkexpansion.basic_ink_gun": "Basic Ink Gun",
+  "item.inkexpansion.funeral_gold": "Funeral Gold",
+  "block.inkexpansion.funeral_gold_block": "Funeral Gold Block",
+  "effect.inkexpansion.inked": "Inked"
+}

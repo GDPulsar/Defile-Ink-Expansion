@@ -1,32 +1,43 @@
 package com.pulsar.inkexpansion.mixin;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import doctor4t.defile.cca.DefileComponents;
+import com.pulsar.inkexpansion.accessors.EclipseAccessor;
+import com.pulsar.inkexpansion.component.ExtendedBlackRainComponent;
+import com.pulsar.inkexpansion.component.InkExpansionComponents;
 import doctor4t.defile.cca.WorldBlackRainComponent;
 import doctor4t.defile.cca.WorldEclipseAnimationComponent;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.util.UUID;
 
 @Mixin(value = WorldEclipseAnimationComponent.class, remap = false)
-public abstract class EclipseAnimationMixin {
-    @Shadow public abstract boolean shouldTick();
-
+public abstract class EclipseAnimationMixin implements EclipseAccessor {
     @Shadow @Final private World world;
 
-    @Inject(method = "serverTick", at = @At("HEAD"))
-    private void inkexpansion$preventRainDuringAnimation(CallbackInfo ci) {
-        if (this.shouldTick()) {
-            DefileComponents.BLACK_RAIN.get(this.world).setGradient(0f);
+    @Redirect(method = "serverTick", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;setTicks(I)V"))
+    private void inkexpansion$relocateRainDuration(WorldBlackRainComponent instance, int ticks) {
+        if (data == null || owner == null) {
+            instance.setTicks(24000);
+            return;
         }
+        InkExpansionComponents.EXTENDED_BLACK_RAIN.get(this.world).startEclipse(owner, data);
     }
 
-    @WrapWithCondition(method = "serverTick", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;setTicks(I)V"))
-    private boolean inkexpansion$relocateRainDuration(WorldBlackRainComponent instance, int ticks) {
-        return false;
+    @Unique ExtendedBlackRainComponent.Data data = null;
+    @Unique UUID owner = null;
+
+    @Override
+    public void inkexpansion$setEclipseData(ExtendedBlackRainComponent.Data data) {
+        this.data = data;
+    }
+
+    @Override
+    public void inkexpansion$setEclipseOwner(UUID owner) {
+        this.owner = owner;
     }
 }

@@ -4,10 +4,13 @@
   "package": "com.pulsar.inkexpansion.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BlackRainComponentExtensionMixin",
     "CauldronBehaviourMixin",
     "CauldronMixin",
     "EclipseAnimationMixin",
-    "ServerWorldInkPrecipitationMixin",
+    "InkEffigyEclipseMixin",
+    "RelocateNaturalInkMixin",
+    "ServerWorldInkMixin",
     "SunEffigyEclipseMixin"
   ],
   "client": [

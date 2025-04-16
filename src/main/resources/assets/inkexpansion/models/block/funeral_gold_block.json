@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "inkexpansion:block/funeral_gold_block"
+  }
+}
