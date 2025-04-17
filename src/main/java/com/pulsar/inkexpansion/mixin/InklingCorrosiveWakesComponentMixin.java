@@ -15,11 +15,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = PlayerInklingComponent.class, remap = false)
+@Mixin(value = PlayerInklingComponent.class)
 public class InklingCorrosiveWakesComponentMixin {
     @Shadow @Final private PlayerEntity player;
 
-    @Redirect(method = "serverTick", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/world/Inksplosion;tick()V"))
+    @Redirect(method = "serverTick", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/world/Inksplosion;tick()V"), remap = false)
     private void inkexpansion$performCorrosiveWakes(Inksplosion instance) {
         InklingUpgradesComponent upgrades = InkExpansionComponents.INKLING_UPGRADES.get(this.player);
         int corrosiveWakes = (int)upgrades.getUpgradeVal(InklingUpgradesComponent.UpgradeType.CORROSIVE_WAKES);

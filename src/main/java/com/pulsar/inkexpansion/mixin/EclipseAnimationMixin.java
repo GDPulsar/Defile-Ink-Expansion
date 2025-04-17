@@ -15,11 +15,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.UUID;
 
-@Mixin(value = WorldEclipseAnimationComponent.class, remap = false)
+@Mixin(value = WorldEclipseAnimationComponent.class)
 public abstract class EclipseAnimationMixin implements EclipseAccessor {
     @Shadow @Final private World world;
 
-    @Redirect(method = "serverTick", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;setTicks(I)V"))
+    @Redirect(method = "serverTick", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;setTicks(I)V"), remap = false)
     private void inkexpansion$relocateRainDuration(WorldBlackRainComponent instance, int ticks) {
         if (data == null || owner == null) {
             instance.setTicks(24000);

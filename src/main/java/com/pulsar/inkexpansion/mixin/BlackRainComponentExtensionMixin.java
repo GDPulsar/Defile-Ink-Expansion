@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(value = WorldBlackRainComponent.class, remap = false)
+@Mixin(value = WorldBlackRainComponent.class)
 public abstract class BlackRainComponentExtensionMixin {
     @Shadow @Final private World world;
 
@@ -22,7 +22,7 @@ public abstract class BlackRainComponentExtensionMixin {
 
     @Shadow private float gradient;
 
-    @ModifyReturnValue(method = "isRaining", at = @At("RETURN"))
+    @ModifyReturnValue(method = "isRaining", at = @At("RETURN"), remap = false)
     private boolean inkexpansion$modifyIsRaining(boolean original) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             if (MinecraftClient.getInstance().cameraEntity != null) {
@@ -32,7 +32,7 @@ public abstract class BlackRainComponentExtensionMixin {
         return original || InkExpansion.getExtendedRainComponent(world).shouldRain();
     }
 
-    @ModifyReturnValue(method = "getGradient", at = @At("RETURN"))
+    @ModifyReturnValue(method = "getGradient", at = @At("RETURN"), remap = false)
     private float inkexpansion$modifyRainGradient(float original) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             return Math.max(original, InkExpansion.getExtendedRainComponent(world).localGradient);
@@ -40,17 +40,17 @@ public abstract class BlackRainComponentExtensionMixin {
         return original;
     }
 
-    @ModifyExpressionValue(method = "serverTick", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;isRaining()Z"))
+    @ModifyExpressionValue(method = "serverTick", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;isRaining()Z"), remap = false)
     private boolean inkexpansion$shouldServerTick(boolean original) {
         return this.ticks > 0;
     }
 
-    @ModifyExpressionValue(method = "tickRain", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;getGradient()F", ordinal = 0))
+    @ModifyExpressionValue(method = "tickRain", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;getGradient()F", ordinal = 0), remap = false)
     private float inkexpansion$tickDefileRain1(float original) {
         return this.gradient;
     }
 
-    @ModifyExpressionValue(method = "tickRain", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;getGradient()F", ordinal = 1))
+    @ModifyExpressionValue(method = "tickRain", at = @At(value = "INVOKE", target = "Ldoctor4t/defile/cca/WorldBlackRainComponent;getGradient()F", ordinal = 1), remap = false)
     private float inkexpansion$tickDefileRain2(float original) {
         return this.gradient;
     }

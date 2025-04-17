@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Pseudo
-@Mixin(value = PlayerEntity.class, priority = 1500, remap = false)
+@Mixin(value = PlayerEntity.class, priority = 1500)
 public class InklingDiveSpeedPlayerEntityMixin {
     @Dynamic
     @TargetHandler(

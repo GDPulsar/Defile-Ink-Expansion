@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Pseudo
-@Mixin(value = ClientPlayerEntity.class, priority = 1500, remap = false)
+@Mixin(value = ClientPlayerEntity.class, priority = 1500)
 public class InklingJumpFillClientPlayerMixin {
     @Dynamic
     @TargetHandler(

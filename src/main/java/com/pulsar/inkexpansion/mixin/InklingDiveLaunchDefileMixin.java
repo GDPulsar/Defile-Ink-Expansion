@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = Defile.class, remap = false)
+@Mixin(value = Defile.class)
 public class InklingDiveLaunchDefileMixin {
     @Redirect(method = "lambda$onInitialize$2",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setVelocity(DDD)V"))

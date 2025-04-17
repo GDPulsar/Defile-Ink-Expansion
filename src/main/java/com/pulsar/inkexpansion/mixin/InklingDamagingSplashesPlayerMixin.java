@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Pseudo
-@Mixin(value = PlayerEntity.class, priority = 1500, remap = false)
+@Mixin(value = PlayerEntity.class, priority = 1500)
 public abstract class InklingDamagingSplashesPlayerMixin extends LivingEntity {
     protected InklingDamagingSplashesPlayerMixin(EntityType<? extends LivingEntity> entityType, World world) { super(entityType, world); }
 
