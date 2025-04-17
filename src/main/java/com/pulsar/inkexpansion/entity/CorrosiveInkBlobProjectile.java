@@ -27,7 +27,7 @@ public class CorrosiveInkBlobProjectile extends ProjectileEntity {
     }
 
     public CorrosiveInkBlobProjectile(PlayerEntity player, World world) {
-        super(InkExpansion.CORROSIVE_INK_PROJECTILE, world);
+        super(InkExpansion.CORROSIVE_INK_BLOB_PROJECTILE, world);
         this.setOwner(player);
     }
 
