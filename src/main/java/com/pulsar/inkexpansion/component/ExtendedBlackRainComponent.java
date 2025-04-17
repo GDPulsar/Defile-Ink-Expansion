@@ -78,8 +78,8 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
     public void startEclipse(UUID ownerUUID, Data data) {
         eclipses.put(ownerUUID, data);
         if (data.dangerZone) {
-            data.inside = this.world.getEntitiesByClass(PlayerEntity.class, Box.of(data.pos.toCenterPos(), 220f, 220f, 220f),
-                    (e) -> e.getPos().distanceTo(data.pos.toCenterPos()) <= 99.5f && !(e.isSpectator() || e.isCreative()));
+            data.inside = this.world.getEntitiesByClass(LivingEntity.class, Box.of(data.pos.toCenterPos(), 220f, 220f, 220f),
+                    (e) -> e.getPos().distanceTo(data.pos.toCenterPos()) <= 99.5f && !e.isSpectator());
         }
         sync();
     }
@@ -202,19 +202,28 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
             if (eclipse.getValue().duration <= 0) toRemove.add(eclipse.getKey());
 
             if (eclipse.getValue().dangerZone) {
-                for (PlayerEntity player : this.world.getEntitiesByClass(PlayerEntity.class, Box.of(eclipse.getValue().pos.toCenterPos(), 220f, 220f, 220f),
-                        (e) -> e.getPos().distanceTo(eclipse.getValue().pos.toCenterPos()) <= 101.5f && !(e.isSpectator() || e.isCreative()))) {
-                    Vec3d offset = player.getPos().subtract(eclipse.getValue().pos.toCenterPos());
-                    if (!eclipse.getValue().inside.contains(player)) {
-                        player.addVelocity(offset.normalize().multiply(0.5f));
-                        player.velocityModified = true;
+                for (LivingEntity living : this.world.getEntitiesByClass(LivingEntity.class, Box.of(eclipse.getValue().pos.toCenterPos(), 220f, 220f, 220f),
+                        (e) -> e.getPos().distanceTo(eclipse.getValue().pos.toCenterPos()) <= 101.5f && !e.isSpectator())) {
+                    Vec3d offset = living.getPos().subtract(eclipse.getValue().pos.toCenterPos());
+                    if (!eclipse.getValue().inside.contains(living)) {
+                        if (living.getPos().distanceTo(eclipse.getValue().pos.toCenterPos()) < 25) {
+                            eclipse.getValue().inside.add(living);
+                            continue;
+                        }
+                        living.addVelocity(offset.normalize().multiply(0.5f));
+                        living.velocityModified = true;
                     }
                 }
-                for (PlayerEntity player : eclipse.getValue().inside) {
-                    Vec3d offset = player.getPos().subtract(eclipse.getValue().pos.toCenterPos());
-                    if (player.getPos().distanceTo(eclipse.getValue().pos.toCenterPos()) >= 98.5f) {
-                        player.addVelocity(offset.normalize().multiply(-0.5f));
-                        player.velocityModified = true;
+                for (LivingEntity living : eclipse.getValue().inside) {
+                    Vec3d offset = living.getPos().subtract(eclipse.getValue().pos.toCenterPos());
+                    double distance = living.getPos().distanceTo(eclipse.getValue().pos.toCenterPos());
+                    if (distance >= 98.5f) {
+                        if (distance > 200f) {
+                            eclipse.getValue().inside.remove(living);
+                            continue;
+                        }
+                        living.addVelocity(offset.normalize().multiply(-0.5f));
+                        living.velocityModified = true;
                     }
                 }
             }
@@ -289,7 +298,7 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
         public int heavy;
         public int duration;
 
-        public List<PlayerEntity> inside = new ArrayList<>();
+        public List<LivingEntity> inside = new ArrayList<>();
 
         public Data() {}
 
