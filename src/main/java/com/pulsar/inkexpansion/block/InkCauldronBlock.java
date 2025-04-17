@@ -25,10 +25,18 @@ public class InkCauldronBlock extends LeveledCauldronBlock {
     public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
         if (InkExpansion.getExtendedRainComponent(world).shouldRainAt(pos.toCenterPos())) {
             ExtendedBlackRainComponent.Data eclipse = InkExpansion.getExtendedRainComponent(world).getAffectingEclipse(pos.toCenterPos());
-            if (world.getRandom().nextFloat() < 0.2f + 0.15f * eclipse.coverage) {
-                BlockState blockState = state.cycle(LEVEL);
-                world.setBlockState(pos, blockState);
-                world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(blockState));
+            if (eclipse != null) {
+                if (world.getRandom().nextFloat() < 0.3f + 0.15f * eclipse.coverage) {
+                    BlockState blockState = state.cycle(LEVEL);
+                    world.setBlockState(pos, blockState);
+                    world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(blockState));
+                }
+            } else {
+                if (world.getRandom().nextFloat() < 0.3f) {
+                    BlockState blockState = state.cycle(LEVEL);
+                    world.setBlockState(pos, blockState);
+                    world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(blockState));
+                }
             }
         }
     }

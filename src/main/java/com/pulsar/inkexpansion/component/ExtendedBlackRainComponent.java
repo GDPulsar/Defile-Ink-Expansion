@@ -137,7 +137,7 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
                 return true;
             }
         }
-        return false;
+        return InkExpansion.getRainComponent(this.world).getTicks() > 0;
     }
 
     public boolean isAffectedBy(Data eclipse, PlayerEntity player) {
@@ -147,7 +147,7 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
     }
 
     public boolean shouldRain() {
-        return !eclipses.isEmpty();
+        return !eclipses.isEmpty() || InkExpansion.getRainComponent(this.world).getTicks() > 0;
     }
 
     @Override
@@ -226,7 +226,12 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
                         (e) -> e.getPos().distanceTo(eclipse.getValue().pos.toCenterPos()) <= 101.5f && !e.isSpectator())) {
                     Vec3d offset = living.getPos().subtract(eclipse.getValue().pos.toCenterPos());
                     if (!eclipse.getValue().inside.contains(living)) {
-                        if (living.getPos().distanceTo(eclipse.getValue().pos.toCenterPos()) < 25) {
+                        if (living.getPos().distanceTo(eclipse.getValue().pos.toCenterPos()) < 75) {
+                            eclipse.getValue().inside.add(living);
+                            eclipse.getValue().insideUuids.remove(living.getUuid());
+                            continue;
+                        }
+                        if (living.age <= 2) {
                             eclipse.getValue().inside.add(living);
                             eclipse.getValue().insideUuids.remove(living.getUuid());
                             continue;

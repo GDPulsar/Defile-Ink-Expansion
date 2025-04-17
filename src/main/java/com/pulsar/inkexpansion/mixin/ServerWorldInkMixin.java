@@ -62,7 +62,7 @@ public abstract class ServerWorldInkMixin extends World {
             ChunkPos chunkPos = chunk.getPos();
             BlockPos blockPos = this.getLightningPos(this.getRandomPosInChunk(chunkPos.getStartX(), 0, chunkPos.getStartZ(), 15));
             ExtendedBlackRainComponent extendedRain = getExtendedRainComponent();
-            if (extendedRain.shouldRainAt(blockPos.toCenterPos())) {
+            if (extendedRain.getAffectingEclipse(blockPos.toCenterPos()) != null) {
                 int stormy = extendedRain.getAffectingEclipse(blockPos.toCenterPos()).stormy;
                 if (stormy > 0) {
                     if (this.random.nextInt(75 / stormy) == 0) {

@@ -15,6 +15,7 @@ import com.pulsar.inkexpansion.item.*;
 import doctor4t.defile.cca.DefileComponents;
 import doctor4t.defile.cca.WorldBlackRainComponent;
 import doctor4t.defile.index.DefileBlocks;
+import doctor4t.defile.index.DefileSounds;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -38,6 +39,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -143,6 +145,8 @@ public class InkExpansion implements ModInitializer {
             if (stack.isOf(Items.GOLD_INGOT)) {
                 if (!world.isClient) {
                     player.giveItemStack(new ItemStack(FUNERAL_GOLD));
+                    stack.decrement(1);
+                    world.playSoundAtBlockCenter(pos, DefileSounds.ENTITY_INK_DIVE, SoundCategory.BLOCKS, 1f, 1f, false);
                     LeveledCauldronBlock.decrementFluidLevel(state, world, pos);
                 }
 
@@ -154,6 +158,8 @@ public class InkExpansion implements ModInitializer {
             if (stack.isOf(Items.COOKIE)) {
                 if (!world.isClient) {
                     player.giveItemStack(new ItemStack(INK_COOKIE));
+                    stack.decrement(1);
+                    world.playSoundAtBlockCenter(pos, DefileSounds.ENTITY_INK_DIVE, SoundCategory.BLOCKS, 1f, 1f, false);
                     LeveledCauldronBlock.decrementFluidLevel(state, world, pos);
                 }
 
