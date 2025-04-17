@@ -18,11 +18,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtIntArray;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Uuids;
 import net.minecraft.util.math.*;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -80,6 +85,10 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
         if (data.dangerZone) {
             data.inside = this.world.getEntitiesByClass(LivingEntity.class, Box.of(data.pos.toCenterPos(), 220f, 220f, 220f),
                     (e) -> e.getPos().distanceTo(data.pos.toCenterPos()) <= 99.5f && !e.isSpectator());
+            data.insideUuids = new ArrayList<>();
+            for (LivingEntity living : data.inside) {
+                data.insideUuids.add(living.getUuid());
+            }
         }
         sync();
     }
@@ -202,12 +211,24 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
             if (eclipse.getValue().duration <= 0) toRemove.add(eclipse.getKey());
 
             if (eclipse.getValue().dangerZone) {
+                for (UUID uuid : eclipse.getValue().insideUuids) {
+                    if (eclipse.getValue().inside.stream().noneMatch(e -> e.getUuid() == uuid)) {
+                        List<LivingEntity> matches = this.world.getEntitiesByClass(LivingEntity.class, Box.of(eclipse.getValue().pos.toCenterPos(), 220, 220, 220), e -> e.getUuid() == uuid);
+                        if (!matches.isEmpty()) eclipse.getValue().inside.add(matches.get(0));
+                    }
+                }
+                for (LivingEntity living : List.copyOf(eclipse.getValue().inside)) {
+                    if (!eclipse.getValue().insideUuids.contains(living.getUuid())) {
+                        eclipse.getValue().inside.remove(living);
+                    }
+                }
                 for (LivingEntity living : this.world.getEntitiesByClass(LivingEntity.class, Box.of(eclipse.getValue().pos.toCenterPos(), 220f, 220f, 220f),
                         (e) -> e.getPos().distanceTo(eclipse.getValue().pos.toCenterPos()) <= 101.5f && !e.isSpectator())) {
                     Vec3d offset = living.getPos().subtract(eclipse.getValue().pos.toCenterPos());
                     if (!eclipse.getValue().inside.contains(living)) {
                         if (living.getPos().distanceTo(eclipse.getValue().pos.toCenterPos()) < 25) {
                             eclipse.getValue().inside.add(living);
+                            eclipse.getValue().insideUuids.remove(living.getUuid());
                             continue;
                         }
                         living.addVelocity(offset.normalize().multiply(0.5f));
@@ -220,6 +241,7 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
                     if (distance >= 98.5f) {
                         if (distance > 200f) {
                             eclipse.getValue().inside.remove(living);
+                            eclipse.getValue().insideUuids.add(living.getUuid());
                             continue;
                         }
                         living.addVelocity(offset.normalize().multiply(-0.5f));
@@ -299,6 +321,7 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
         public int duration;
 
         public List<LivingEntity> inside = new ArrayList<>();
+        public List<UUID> insideUuids = new ArrayList<>();
 
         public Data() {}
 
@@ -309,6 +332,12 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
             coverage = nbt.getInt("coverage");
             heavy = nbt.getInt("heavy");
             duration = nbt.getInt("duration");
+
+            NbtList insideNbt = nbt.getList("inside", NbtElement.INT_ARRAY_TYPE);
+            for (int i = 0; i < insideNbt.size(); i++) {
+                UUID uuid = Uuids.toUuid(insideNbt.getIntArray(i));
+                insideUuids.add(uuid);
+            }
         }
 
         public NbtCompound getNbt() {
@@ -319,6 +348,14 @@ public class ExtendedBlackRainComponent implements AutoSyncedComponent, ClientTi
             nbt.putInt("coverage", coverage);
             nbt.putInt("heavy", heavy);
             nbt.putInt("duration", duration);
+
+            NbtList insideNbt = new NbtList();
+            for (LivingEntity living : inside) {
+                if (living instanceof PlayerEntity player) {
+                    insideNbt.add(new NbtIntArray(Uuids.toIntArray(player.getUuid())));
+                }
+            }
+            nbt.put("inside", insideNbt);
             return nbt;
         }
     }
