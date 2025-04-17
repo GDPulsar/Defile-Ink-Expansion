@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "BCB",
+    " G "
+  ],
+  "key": {
+    "C": {
+      "item": "inkexpansion:ink_cookie"
+    },
+    "B": {
+      "item": "minecraft:blaze_powder"
+    },
+    "G": {
+      "item": "minecraft:ghast_tear"
+    }
+  },
+  "result": {
+    "item": "inkexpansion:dive_regen_cookie",
+    "count": 1
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "values": [
+    "minecraft:echo_shard",
+    "minecraft:nether_star",
+    {"id": "spectrum:pure_echo", "required": false}
+  ]
+}

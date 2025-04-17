@@ -1,5 +1,7 @@
 package com.pulsar.inkexpansion.block;
 
+import com.pulsar.inkexpansion.InkExpansion;
+import com.pulsar.inkexpansion.component.ExtendedBlackRainComponent;
 import doctor4t.defile.cca.DefileComponents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
@@ -21,10 +23,13 @@ public class InkCauldronBlock extends LeveledCauldronBlock {
 
     @Override
     public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
-        if (world.getRandom().nextFloat() < 0.33f && DefileComponents.BLACK_RAIN.get(world).isRaining() && state.get(LEVEL) != 3) {
-            BlockState blockState = state.cycle(LEVEL);
-            world.setBlockState(pos, blockState);
-            world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(blockState));
+        if (InkExpansion.getExtendedRainComponent(world).shouldRainAt(pos.toCenterPos())) {
+            ExtendedBlackRainComponent.Data eclipse = InkExpansion.getExtendedRainComponent(world).getAffectingEclipse(pos.toCenterPos());
+            if (world.getRandom().nextFloat() < 0.2f + 0.15f * eclipse.coverage) {
+                BlockState blockState = state.cycle(LEVEL);
+                world.setBlockState(pos, blockState);
+                world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(blockState));
+            }
         }
     }
 }

@@ -1,0 +1,55 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "inkexpansion:block/corrosive_ink_side"
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "inkexpansion:block/corrosive_ink_side",
+        "y": 90
+      },
+      "when": {
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "inkexpansion:block/corrosive_ink_side",
+        "y": 180
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "inkexpansion:block/corrosive_ink_side",
+        "y": 270
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "inkexpansion:block/corrosive_ink_up"
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "inkexpansion:block/corrosive_ink_down"
+      },
+      "when": {
+        "down": "true"
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " g ",
+    "ggg",
+    " IG"
+  ],
+  "key": {
+    "g": {
+      "item": "inkexpansion:funeral_gold"
+    },
+    "I": {
+      "item": "inkexpansion:ink_bucket"
+    },
+    "G": {
+      "item": "inkexpansion:funeral_gold_block"
+    }
+  },
+  "result": {
+    "item": "inkexpansion:ink_thrower",
+    "count": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#g ",
+    "ggg",
+    " IG"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_bars"
+    },
+    "g": {
+      "item": "inkexpansion:funeral_gold"
+    },
+    "I": {
+      "item": "inkexpansion:corrosive_ink_bucket"
+    },
+    "G": {
+      "item": "inkexpansion:funeral_gold_block"
+    }
+  },
+  "result": {
+    "item": "inkexpansion:corrosive_ink_spreader",
+    "count": 1
+  }
+}

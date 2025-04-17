@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "inkexpansion:funeral_gold_block"
+    }
+  ],
+  "result": {
+    "item": "inkexpansion:funeral_gold",
+    "count": 9
+  }
+}

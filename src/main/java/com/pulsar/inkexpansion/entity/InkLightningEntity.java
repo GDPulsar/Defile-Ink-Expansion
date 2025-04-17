@@ -3,19 +3,24 @@ package com.pulsar.inkexpansion.entity;
 import com.pulsar.inkexpansion.InkExpansion;
 import doctor4t.defile.block.FuneralInkBlock;
 import doctor4t.defile.index.DefileBlocks;
+import doctor4t.defile.index.DefileStatusEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ConnectingBlock;
 import net.minecraft.block.MultifaceGrowthBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +40,7 @@ public class InkLightningEntity extends LightningEntity {
                 this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, 10000.0F, 0.8F + this.random.nextFloat() * 0.2F, false);
                 this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_LIGHTNING_BOLT_IMPACT, SoundCategory.WEATHER, 2.0F, 0.5F + this.random.nextFloat() * 0.2F, false);
             } else {
+                damageNearby();
                 this.spawnInk();
             }
         }
@@ -44,6 +50,17 @@ public class InkLightningEntity extends LightningEntity {
             if (!(this.getWorld() instanceof ServerWorld)) {
                 this.getWorld().setLightningTicksLeft(2);
             }
+        }
+    }
+
+    private static final float radius = 2.5f;
+    private void damageNearby() {
+        for (LivingEntity living : this.getWorld().getEntitiesByClass(LivingEntity.class, Box.of(this.getPos(),
+                radius * 2f, radius * 2f, radius * 2f), (entity) -> entity.distanceTo(this) < radius)) {
+            if (living.hasStatusEffect(DefileStatusEffects.INKMORPHOSIS)) continue;
+            float damage = 25f * (3f - (float)this.getPos().distanceTo(living.getPos())) / 3f;
+            living.damage(this.getDamageSources().create(InkExpansion.INK_DAMAGE_TYPE), damage);
+            living.addStatusEffect(new StatusEffectInstance(InkExpansion.INKED, 240, 0));
         }
     }
 

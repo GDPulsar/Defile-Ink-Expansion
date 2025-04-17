@@ -1,0 +1,6 @@
+{
+  "values": [
+    "minecraft:heart_of_the_sea",
+    {"id": "spectrum:pure_copper", "required": false}
+  ]
+}

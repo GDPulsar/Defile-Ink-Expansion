@@ -2,26 +2,31 @@ package com.pulsar.inkexpansion.client;
 
 import com.pulsar.inkexpansion.InkExpansion;
 import com.pulsar.inkexpansion.component.ExtendedBlackRainComponent;
-import com.pulsar.inkexpansion.component.InkExpansionComponents;
-import com.pulsar.inkexpansion.entity.renderer.InkGlobuleRenderer;
-import com.pulsar.inkexpansion.entity.renderer.InkLightningRenderer;
-import com.pulsar.inkexpansion.entity.renderer.InkProjectileRenderer;
+import com.pulsar.inkexpansion.entity.model.InkBlobModel;
+import com.pulsar.inkexpansion.entity.model.InkGlobuleModel;
+import com.pulsar.inkexpansion.entity.renderer.*;
+import com.pulsar.inkexpansion.packet.DamagingSplashPacket;
 import dev.doctor4t.ratatouille.client.lib.render.handlers.RenderHandler;
 import dev.doctor4t.ratatouille.client.lib.render.systems.rendering.VFXBuilders;
+import doctor4t.defile.index.DefileSounds;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.figuramc.figura.avatar.AvatarManager;
 
 import java.awt.*;
 
@@ -31,39 +36,42 @@ import static doctor4t.defile.DefileClient.FOLLY;
 public class InkExpansionClient implements ClientModInitializer {
     public static boolean disableInkRenderer = false;
 
-    private static float inkAlpha = 0f;
+    public static float inkAlpha = 0f;
     public static final Identifier INKED_TEXTURE = Identifier.of("inkexpansion", "textures/gui/inked_effect.png");
+
+    public static final EntityModelLayer INK_GLOBULE_LAYER = new EntityModelLayer(Identifier.of("inkexpansion", "ink_globule"), "ink_globule");
+    public static final EntityModelLayer INK_BLOB_LAYER = new EntityModelLayer(Identifier.of("inkexpansion", "ink_blob"), "ink_blob");
 
     @Override
     public void onInitializeClient() {
-        if (FabricLoader.getInstance().isModLoaded("figura")) {
-            disableInkRenderer = true;
-        }
-
-        HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
-            PlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null) {
-                if (player.hasStatusEffect(InkExpansion.INKED)) {
-                    inkAlpha = MathHelper.clamp(inkAlpha + tickDelta, 0f, 1f);
-                    int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-                    int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
-                    drawContext.drawTexture(INKED_TEXTURE, 0, 0, width, height,
-                            0, 0, 1920, 1080, 1920, 1080);
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player != null) {
+                if (FabricLoader.getInstance().isModLoaded("figura")) {
+                    if (AvatarManager.getAvatarForPlayer(client.player.getUuid()) != null) disableInkRenderer = true;
+                }
+                if (client.player.hasStatusEffect(InkExpansion.INKED)) {
+                    inkAlpha = MathHelper.clamp(inkAlpha + 0.05f, 0f, 1f);
                 } else {
-                    inkAlpha = MathHelper.clamp(inkAlpha - tickDelta, 0f, 1f);
+                    inkAlpha = MathHelper.clamp(inkAlpha - 0.02f, 0f, 1f);
                 }
             }
         });
 
         ParticleFactoryRegistry.getInstance().register(InkExpansion.PROJECTILE_INK, ProjectileInkParticle.Factory::new);
 
+        EntityModelLayerRegistry.registerModelLayer(INK_GLOBULE_LAYER, InkGlobuleModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(INK_BLOB_LAYER, InkBlobModel::getTexturedModelData);
+
         EntityRendererRegistry.register(InkExpansion.INK_LIGHTNING, InkLightningRenderer::new);
         EntityRendererRegistry.register(InkExpansion.INK_PROJECTILE, InkProjectileRenderer::new);
+        EntityRendererRegistry.register(InkExpansion.INK_BLOB_PROJECTILE, InkBlobRenderer::new);
         EntityRendererRegistry.register(InkExpansion.INK_GLOBULE_PROJECTILE, InkGlobuleRenderer::new);
+        EntityRendererRegistry.register(InkExpansion.CORROSIVE_INK_PROJECTILE, CorrosiveInkProjectileRenderer::new);
+        EntityRendererRegistry.register(InkExpansion.CORROSIVE_INK_BLOB_PROJECTILE, CorrosiveInkBlobRenderer::new);
 
         WorldRenderEvents.BEFORE_ENTITIES.register((context) -> {
             World world = context.world();
-            ExtendedBlackRainComponent eclipseComponent = getCachedExtendedRainComponent(world);
+            ExtendedBlackRainComponent eclipseComponent = InkExpansion.getExtendedRainComponent(world);
             for (ExtendedBlackRainComponent.Data eclipse : eclipseComponent.getDangerZones()) {
                 MatrixStack matrices = context.matrixStack();
                 matrices.push();
@@ -77,18 +85,16 @@ public class InkExpansionClient implements ClientModInitializer {
                 matrices.pop();
             }
         });
-    }
 
-    public static ExtendedBlackRainComponent cachedExtendedRain;
-    public static ExtendedBlackRainComponent getCachedExtendedRainComponent(World world) {
-        if (cachedExtendedRain == null) {
-            cachedExtendedRain = InkExpansionComponents.EXTENDED_BLACK_RAIN.get(world);
-        }
-
-        return cachedExtendedRain;
-    }
-
-    public static void reloadCache(World world) {
-        cachedExtendedRain = InkExpansionComponents.EXTENDED_BLACK_RAIN.get(world);
+        ClientPlayNetworking.registerGlobalReceiver(DamagingSplashPacket.ID, (client, handler, buf, responseSender) -> {
+            DamagingSplashPacket packet = new DamagingSplashPacket(buf);
+            Entity entity = packet.getEntity(client.world);
+            client.execute(() -> {
+                if (entity != null) {
+                    client.particleManager.addEmitter(entity, InkExpansion.PROJECTILE_INK, 30);
+                    client.world.playSound(entity.getX(), entity.getY(), entity.getZ(), DefileSounds.ENTITY_INK_EXPLODE, entity.getSoundCategory(), 1f, 0.9f, false);
+                }
+            });
+        });
     }
 }

@@ -2,19 +2,15 @@ package com.pulsar.inkexpansion.entity;
 
 import com.pulsar.inkexpansion.InkExpansion;
 import doctor4t.defile.index.DefileBlocks;
-import doctor4t.defile.index.DefileParticles;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ConnectingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -120,7 +116,7 @@ public class InkProjectile extends ProjectileEntity {
     @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
         if (entityHitResult.getEntity() instanceof LivingEntity living) {
-            living.damage(this.getWorld().getDamageSources().create(DamageTypes.INDIRECT_MAGIC), 1);
+            living.damage(this.getDamageSources().create(InkExpansion.INK_DAMAGE_TYPE), 3);
             living.addStatusEffect(new StatusEffectInstance(InkExpansion.INKED, 120, 0));
         }
         this.discard();

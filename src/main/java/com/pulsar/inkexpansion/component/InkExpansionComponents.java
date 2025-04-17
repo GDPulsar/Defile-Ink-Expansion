@@ -15,7 +15,7 @@ public class InkExpansionComponents implements EntityComponentInitializer, World
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(INKLING_UPGRADES, InklingUpgradesComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
+        registry.registerForPlayers(INKLING_UPGRADES, InklingUpgradesComponent::new, RespawnCopyStrategy.INVENTORY);
     }
 
     @Override

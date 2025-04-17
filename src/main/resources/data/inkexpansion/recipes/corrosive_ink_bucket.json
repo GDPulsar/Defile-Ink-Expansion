@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " R ",
+    "RBR",
+    " R "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:wither_rose"
+    },
+    "B": {
+      "item": "inkexpansion:ink_bucket"
+    }
+  },
+  "result": {
+    "item": "inkexpansion:corrosive_ink_bucket",
+    "count": 1
+  }
+}

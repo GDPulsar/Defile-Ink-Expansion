@@ -1,0 +1,30 @@
+{
+	"ambientocclusion": false,
+	"textures": {
+		"1": "inkexpansion:block/corrosive_ink_side",
+		"particle": "inkexpansion:block/corrosive_ink",
+		"funeral_ink": "inkexpansion:block/corrosive_ink"
+	},
+	"elements": [
+		{
+			"from": [-0.1, 15.9, -0.1],
+			"to": [16.1, 21.1, 16.1],
+			"rotation": {"angle": 0, "axis": "x", "origin": [0, 16, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 5], "rotation": 180, "texture": "#1"},
+				"east": {"uv": [0, 0, 16, 5], "rotation": 180, "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 5], "rotation": 180, "texture": "#1"},
+				"west": {"uv": [0, 0, 16, 5], "rotation": 180, "texture": "#1"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#funeral_ink"}
+			}
+		},
+		{
+			"from": [-0.1, 15.9, -0.1],
+			"to": [16.1, 15.9, 16.1],
+			"rotation": {"angle": 0, "axis": "x", "origin": [0, 16, 0]},
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#funeral_ink"}
+			}
+		}
+	]
+}

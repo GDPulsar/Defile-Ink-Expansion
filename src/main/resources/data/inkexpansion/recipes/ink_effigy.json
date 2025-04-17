@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "GSG",
+    " G "
+  ],
+  "key": {
+    "G": {
+      "item": "inkexpansion:funeral_gold_block"
+    },
+    "S": {
+      "item": "minecraft:sunflower"
+    }
+  },
+  "result": {
+    "item": "inkexpansion:ink_effigy",
+    "count": 1
+  }
+}

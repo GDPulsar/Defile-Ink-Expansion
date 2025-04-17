@@ -2,6 +2,7 @@ package com.pulsar.inkexpansion.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.pulsar.inkexpansion.InkExpansion;
 import com.pulsar.inkexpansion.client.InkExpansionClient;
 import doctor4t.defile.cca.WorldBlackRainComponent;
 import net.fabricmc.api.EnvType;
@@ -25,16 +26,16 @@ public abstract class BlackRainComponentExtensionMixin {
     private boolean inkexpansion$modifyIsRaining(boolean original) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             if (MinecraftClient.getInstance().cameraEntity != null) {
-                return original || InkExpansionClient.getCachedExtendedRainComponent(world).shouldRainAt(MinecraftClient.getInstance().cameraEntity.getPos());
+                return original || InkExpansion.getExtendedRainComponent(world).shouldRainAt(MinecraftClient.getInstance().cameraEntity.getPos());
             }
         }
-        return original || InkExpansionClient.getCachedExtendedRainComponent(world).shouldRain();
+        return original || InkExpansion.getExtendedRainComponent(world).shouldRain();
     }
 
     @ModifyReturnValue(method = "getGradient", at = @At("RETURN"))
     private float inkexpansion$modifyRainGradient(float original) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            return Math.max(original, InkExpansionClient.getCachedExtendedRainComponent(world).localGradient);
+            return Math.max(original, InkExpansion.getExtendedRainComponent(world).localGradient);
         }
         return original;
     }

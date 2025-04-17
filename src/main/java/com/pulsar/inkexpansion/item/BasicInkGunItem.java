@@ -18,6 +18,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class BasicInkGunItem extends Item {
+    private final int maxFuel = 4000;
+
     public BasicInkGunItem() {
         super(new FabricItemSettings().maxCount(1));
     }
@@ -46,14 +48,14 @@ public class BasicInkGunItem extends Item {
 
     @Override
     public boolean isItemBarVisible(ItemStack stack) {
-        return !stack.getOrCreateNbt().contains("fuel") || stack.getOrCreateNbt().getInt("fuel") < 4000;
+        return !stack.getOrCreateNbt().contains("fuel") || stack.getOrCreateNbt().getInt("fuel") < maxFuel;
     }
 
     @Override
     public int getItemBarStep(ItemStack stack) {
         if (stack.getOrCreateNbt().contains("fuel")) {
             int fuel = stack.getOrCreateNbt().getInt("fuel");
-            return 13 - Math.round(13f - fuel * 13f / 4000f);
+            return 13 - Math.round(13f - fuel * 13f / (float)maxFuel);
         }
         return 0;
     }
@@ -62,7 +64,7 @@ public class BasicInkGunItem extends Item {
     public int getItemBarColor(ItemStack stack) {
         if (stack.getOrCreateNbt().contains("fuel")) {
             int fuel = stack.getOrCreateNbt().getInt("fuel");
-            float f = Math.max(0f, fuel / 4000f);
+            float f = Math.max(0f, fuel / (float)maxFuel);
             return MathHelper.hsvToRgb(f / 3f, 1f, 1f);
         }
         return MathHelper.hsvToRgb(0f, 1f, 1f);
@@ -81,9 +83,9 @@ public class BasicInkGunItem extends Item {
     @Override
     public boolean onClicked(ItemStack stack, ItemStack otherStack, Slot slot, ClickType clickType, PlayerEntity player, StackReference cursorStackReference) {
         if (clickType == ClickType.RIGHT && otherStack.isOf(InkExpansion.INK_BUCKET)) {
-            if (stack.getOrCreateNbt().contains("fuel") && stack.getOrCreateNbt().getInt("fuel") >= 4000) return false;
+            if (stack.getOrCreateNbt().contains("fuel") && stack.getOrCreateNbt().getInt("fuel") >= maxFuel) return false;
             cursorStackReference.set(new ItemStack(Items.BUCKET));
-            stack.getOrCreateNbt().putInt("fuel", MathHelper.clamp(stack.getOrCreateNbt().getInt("fuel") + 1000, 0, 4000));
+            stack.getOrCreateNbt().putInt("fuel", MathHelper.clamp(stack.getOrCreateNbt().getInt("fuel") + 1000, 0, maxFuel));
             return true;
         }
         return false;

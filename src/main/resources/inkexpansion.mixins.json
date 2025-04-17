@@ -7,14 +7,23 @@
     "BlackRainComponentExtensionMixin",
     "CauldronBehaviourMixin",
     "CauldronMixin",
+    "DefileCorrosionInkCompatMixin",
     "EclipseAnimationMixin",
-    "InkEffigyEclipseMixin",
+    "ExtraEffigiesEclipseMixin",
+    "InklingCorrosiveWakesComponentMixin",
+    "InklingDamagingSplashesPlayerMixin",
+    "InklingDiveLaunchDefileMixin",
+    "InklingDiveSpeedPlayerEntityMixin",
+    "InklingReinforcementMixin",
+    "PreventRainCleaningFuneralInkMixin",
     "RelocateNaturalInkMixin",
     "ServerWorldInkMixin",
     "SunEffigyEclipseMixin"
   ],
   "client": [
+    "GameRendererInkedMixin",
     "InklingHeadFiguraOverrideMixin",
+    "InklingJumpFillClientPlayerMixin",
     "InklingRenderFiguraOverrideMixin"
   ],
   "mixinextras": {

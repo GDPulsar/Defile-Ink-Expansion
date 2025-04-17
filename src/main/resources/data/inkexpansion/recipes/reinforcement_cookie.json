@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " N ",
+    "NCN",
+    " N "
+  ],
+  "key": {
+    "C": {
+      "item": "inkexpansion:ink_cookie"
+    },
+    "N": {
+      "item": "minecraft:netherite_scrap"
+    }
+  },
+  "result": {
+    "item": "inkexpansion:reinforcement_cookie",
+    "count": 1
+  }
+}
