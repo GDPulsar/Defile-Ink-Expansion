@@ -111,7 +111,7 @@ public class InkBlobProjectile extends ProjectileEntity {
         this.discard();
     }
 
-    private static final float radius = 2f;
+    private static final float radius = 3.5f;
     private void coverSurroundings() {
         BlockPos center = this.getBlockPos();
         for (int x = -MathHelper.ceil(radius); x <= MathHelper.ceil(radius); x++) {
