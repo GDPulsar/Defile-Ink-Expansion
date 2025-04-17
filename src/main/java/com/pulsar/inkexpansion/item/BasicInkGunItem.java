@@ -2,7 +2,11 @@ package com.pulsar.inkexpansion.item;
 
 import com.pulsar.inkexpansion.InkExpansion;
 import com.pulsar.inkexpansion.entity.InkProjectile;
+import doctor4t.defile.cca.DefileComponents;
+import doctor4t.defile.cca.PlayerInklingComponent;
+import doctor4t.defile.index.DefileStatusEffects;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.StackReference;
@@ -36,7 +40,7 @@ public class BasicInkGunItem extends Item {
         if (stack.getOrCreateNbt().contains("fuel") && remainingUseTicks % 2 == 0) {
             int fuel = stack.getOrCreateNbt().getInt("fuel");
             if (fuel > 0) {
-                stack.getOrCreateNbt().putInt("fuel", fuel - 5);
+                stack.getOrCreateNbt().putInt("fuel", fuel - 10);
                 InkProjectile ink = new InkProjectile((PlayerEntity)user, world);
                 ink.setPosition(user.getEyePos().add(user.getRotationVector()));
                 ink.setVelocity(user.getRotationVector().multiply(2.5f));
@@ -89,5 +93,18 @@ public class BasicInkGunItem extends Item {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+        if (entity instanceof PlayerEntity player) {
+            if (player.hasStatusEffect(DefileStatusEffects.INKMORPHOSIS)) {
+                PlayerInklingComponent inkling = DefileComponents.INKLING.get(player);
+                if (inkling.isDiving()) {
+                    stack.getOrCreateNbt().putInt("fuel", (stack.getOrCreateNbt().contains("fuel") ? stack.getOrCreateNbt().getInt("fuel") : 0) + 1);
+                }
+            }
+        }
+        super.inventoryTick(stack, world, entity, slot, selected);
     }
 }
