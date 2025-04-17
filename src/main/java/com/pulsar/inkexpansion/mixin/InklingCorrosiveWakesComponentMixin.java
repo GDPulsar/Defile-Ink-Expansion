@@ -24,7 +24,7 @@ public class InklingCorrosiveWakesComponentMixin {
         InklingUpgradesComponent upgrades = InkExpansionComponents.INKLING_UPGRADES.get(this.player);
         int corrosiveWakes = (int)upgrades.getUpgradeVal(InklingUpgradesComponent.UpgradeType.CORROSIVE_WAKES);
         SpecialInksplosion.inksplode(this.player.getWorld(), this.player, this.player.getX(), this.player.getY(), this.player.getZ(),
-                DefileCommand.getInkSpreadPower() + Math.max(0, corrosiveWakes - 1), corrosiveWakes > 0 ?
+                DefileCommand.getInkSpreadPower() + Math.max(0, corrosiveWakes - 2), corrosiveWakes > 0 ?
                         InkExpansion.CORROSIVE_INK : DefileBlocks.FUNERAL_INK);
     }
 }

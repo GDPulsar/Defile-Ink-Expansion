@@ -15,7 +15,9 @@ public class InklingReinforcementMixin {
         if ((LivingEntity)(Object)this instanceof PlayerEntity player) {
             InklingUpgradesComponent upgrades = InkExpansionComponents.INKLING_UPGRADES.get(player);
             if (upgrades.currentReinforcement > 0) {
-                return original * (1f - upgrades.currentReinforcement);
+                float mult = 1f - upgrades.currentReinforcement;
+                upgrades.currentReinforcement = 0f;
+                return original * mult;
             }
         }
         return original;
