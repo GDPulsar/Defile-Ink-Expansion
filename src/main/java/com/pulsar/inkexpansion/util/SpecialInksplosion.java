@@ -1,10 +1,12 @@
 package com.pulsar.inkexpansion.util;
 
 import com.pulsar.inkexpansion.InkExpansion;
+import com.pulsar.inkexpansion.block.CorrosiveInk;
 import doctor4t.defile.block.FuneralInkBlock;
 import doctor4t.defile.index.DefileBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ConnectingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +17,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class SpecialInksplosion {
-    public static void inksplode(World world, @Nullable Entity entity, double x, double y, double z, float power, Block inkType) {
+    public static void inksplode(World world, @Nullable Entity entity, double x, double y, double z, float power, BlockState inkType) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         for(int j = 0; j < 16; ++j) {
@@ -52,7 +54,7 @@ public class SpecialInksplosion {
 
     }
 
-    private static void affectPos(World world, Entity entity, Vec3d pos, BlockPos.Mutable blockPos, Block inkType) {
+    private static void affectPos(World world, Entity entity, Vec3d pos, BlockPos.Mutable blockPos, BlockState inkType) {
         double pX = blockPos.getX();
         double pY = blockPos.getY();
         double pZ = blockPos.getZ();
@@ -70,8 +72,13 @@ public class SpecialInksplosion {
                 if (blockStateToInk.isOf(DefileBlocks.FUNERAL_INK) || blockStateToInk.isOf(InkExpansion.CORROSIVE_INK)) {
                     world.setBlockState(blockPos, blockStateToInk.with(FuneralInkBlock.getProperty(direction.getOpposite()), true));
                 } else if (blockStateToInk.isAir()) {
-                    world.setBlockState(blockPos, inkType.getDefaultState().with(FuneralInkBlock.getProperty(direction.getOpposite()), true));
+                    world.setBlockState(blockPos, inkType.with(FuneralInkBlock.getProperty(direction.getOpposite()), true));
                 }
+            } else if (world.getBlockState(hit.getBlockPos()).isOf(DefileBlocks.FUNERAL_INK) || world.getBlockState(hit.getBlockPos()).isOf(InkExpansion.CORROSIVE_INK)) {
+                BlockState blockStateToInk = world.getBlockState(hit.getBlockPos());
+                BlockState newState = inkType.getBlock().getStateWithProperties(blockStateToInk);
+                if (inkType.contains(CorrosiveInk.CORROSION_LEVEL)) newState = newState.with(CorrosiveInk.CORROSION_LEVEL, inkType.get(CorrosiveInk.CORROSION_LEVEL));
+                world.setBlockState(hit.getBlockPos(), newState);
             }
 
             blockPos.set(pX, pY, pZ);
