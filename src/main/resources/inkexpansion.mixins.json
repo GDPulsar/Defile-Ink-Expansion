@@ -14,6 +14,8 @@
     "InklingDamagingSplashesPlayerMixin",
     "InklingDiveLaunchDefileMixin",
     "InklingDiveSpeedPlayerEntityMixin",
+    "InklingHungerManagerMixin",
+    "InklingRegenMixin",
     "InklingReinforcementMixin",
     "PreventRainCleaningFuneralInkMixin",
     "RelocateNaturalInkMixin",
